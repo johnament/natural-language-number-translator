@@ -11,7 +11,7 @@ import ws.ament.numbers.NumberTranslator;
 import ws.ament.numbers.NumberTranslatorService;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,35 +34,35 @@ public class EnglishNumberRouteTest {
     @Test
     public void shouldReturn400OnNullInput() throws Exception{
         when(request.queryParams("number")).thenReturn(null);
-        Object message = englishNumberRoute.handle(request, response);
-
-        verify400EmptyInput(message);
+        assertThatThrownBy(() -> englishNumberRoute.handle(request, response))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageMatching("No input specified");
     }
 
     @Test
     public void shouldReturn400OnEmptyInput() throws Exception{
         when(request.queryParams("number")).thenReturn("");
-        Object message = englishNumberRoute.handle(request, response);
-
-        verify400EmptyInput(message);
+        assertThatThrownBy(() -> englishNumberRoute.handle(request, response))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageMatching("No input specified");
     }
 
     @Test
     public void shouldReturn400OnNonNumericInput() throws Exception {
         String digits = "123abc";
         when(request.queryParams("number")).thenReturn(digits);
-        Object message = englishNumberRoute.handle(request, response);
-
-        verify400InvalidInput(message);
+        assertThatThrownBy(() -> englishNumberRoute.handle(request, response))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageMatching("Invalid input");
     }
 
     @Test
     public void shouldReturn400OnTooLargeInput() throws Exception {
         String digits = "1000000001";
         when(request.queryParams("number")).thenReturn(digits);
-        Object message = englishNumberRoute.handle(request, response);
-
-        verify400InvalidInput(message);
+        assertThatThrownBy(() -> englishNumberRoute.handle(request, response))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageMatching("Invalid input");
     }
 
     @Test
@@ -76,8 +76,6 @@ public class EnglishNumberRouteTest {
         Object message = englishNumberRoute.handle(request, response);
 
         assertThat(message).isEqualTo(expectedOutput);
-        verify(response).type("text/plain");
-        verify(response).status(200);
     }
 
     @Test
@@ -85,24 +83,9 @@ public class EnglishNumberRouteTest {
         String digits = "1242523625325";
         when(request.queryParams("number")).thenReturn(digits);
 
-        Object message = englishNumberRoute.handle(request, response);
-
-        verify400InvalidInput(message);
+        assertThatThrownBy(() -> englishNumberRoute.handle(request, response))
+                .isInstanceOf(InvalidInputException.class)
+                .hasMessageMatching("Invalid input");
     }
 
-    private void verify400InvalidInput(Object message) {
-        assertThat(message).isEqualTo("Invalid input");
-        verify400Status();
-    }
-
-
-    private void verify400EmptyInput(Object message) {
-        assertThat(message).isEqualTo("No input specified");
-        verify400Status();
-    }
-
-    private void verify400Status() {
-        verify(response).type("text/plain");
-        verify(response).status(400);
-    }
 }

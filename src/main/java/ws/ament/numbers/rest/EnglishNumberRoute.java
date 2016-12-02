@@ -7,7 +7,11 @@ import spark.Route;
 import ws.ament.numbers.NumberTranslatorService;
 
 public class EnglishNumberRoute implements Route{
-    private static final String TEXT_PLAIN = "text/plain";
+    private static final String INVALID_INPUT = "Invalid input";
+    private static final String NO_INPUT_SPECIFIED = "No input specified";
+
+    private static final String NUMBER = "number";
+
     private final NumberTranslatorService numberTranslatorService;
     private static final int MAX_INPUT = 1_000_000_000;
 
@@ -17,37 +21,22 @@ public class EnglishNumberRoute implements Route{
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        String number = request.queryParams("number");
+        String number = request.queryParams(NUMBER);
         if(StringUtils.isEmpty(number)) {
-            return400(response);
-            return "No input specified";
+            throw new InvalidInputException(NO_INPUT_SPECIFIED);
         }
         else if(!StringUtils.isNumeric(number)) {
-            return invalidInput(response);
+            throw new InvalidInputException(INVALID_INPUT);
         }
         try {
             Integer numberValue = Integer.parseInt(number);
             if (numberValue > MAX_INPUT) {
-                return invalidInput(response);
+                throw new InvalidInputException(INVALID_INPUT);
             }
-
-            String message = numberTranslatorService.createTranslator(numberValue).getCapitalizedTranslation();
-            response.status(200);
-            response.type(TEXT_PLAIN);
-            return message;
+            return numberTranslatorService.createTranslator(numberValue).getCapitalizedTranslation();
         }
         catch (NumberFormatException e) {
-            return invalidInput(response);
+            throw new InvalidInputException(INVALID_INPUT,e);
         }
-    }
-
-    private Object invalidInput(Response response) {
-        return400(response);
-        return "Invalid input";
-    }
-
-    private void return400(Response response) {
-        response.status(400);
-        response.type(TEXT_PLAIN);
     }
 }

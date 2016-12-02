@@ -5,6 +5,7 @@ import ws.ament.numbers.english.EnglishNumberTranslatorService;
 
 import java.io.IOException;
 
+import static spark.Spark.exception;
 import static spark.Spark.get;
 import static spark.Spark.staticFiles;
 import static spark.route.RouteOverview.enableRouteOverview;
@@ -15,6 +16,10 @@ public class RestServer {
         BasicConfigurator.configure();
         staticFiles.location("/assets");
         enableRouteOverview();
+        exception(InvalidInputException.class, (e, request, response) -> {
+            response.body(e.getMessage());
+            response.status(400);
+        });
         get("/numbers/en", new EnglishNumberRoute(new EnglishNumberTranslatorService()));
     }
 }

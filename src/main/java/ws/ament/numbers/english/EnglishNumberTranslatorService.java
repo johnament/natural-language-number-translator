@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toConcurrentMap;
 
 /**
  * Translates input numerical values into their english language equivalents
@@ -40,7 +40,7 @@ public class EnglishNumberTranslatorService implements NumberTranslatorService {
     }
 
     private static Map<String, String> toMap(Properties properties) {
-        return unmodifiableMap(properties.entrySet().stream().collect(Collectors.toConcurrentMap(e -> e.getKey().toString(),
+        return unmodifiableMap(properties.entrySet().stream().collect(toConcurrentMap(e -> e.getKey().toString(),
                 e-> e.getValue().toString())));
     }
 }

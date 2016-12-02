@@ -5,6 +5,7 @@ angular.module('translatorApp', [])
         translator.translated = "";
         translator.setTranslated = function(response) {
             translator.translated = response.data;
+            translator.toTranslate = "";
         };
         translator.doTranslate = function() {
             $http
