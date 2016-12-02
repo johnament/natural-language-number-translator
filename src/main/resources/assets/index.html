@@ -1,0 +1,17 @@
+<!doctype html>
+<html ng-app="translatorApp">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.2/angular.min.js"></script>
+    <script src="translator.js"></script>
+</head>
+<body>
+<h2>Number Translator</h2>
+<div ng-controller="TranslatorController as translator">
+    <form ng-submit="translator.doTranslate()">
+        <input type="text" ng-model="translator.toTranslate"  size="15" placeholder="enter number here" required>
+        <input class="btn-primary" type="submit" value="translate">
+    </form>
+    <b>Response:</b><span>{{translator.translated}}</span>
+</div>
+</body>
+</html>

@@ -80,6 +80,16 @@ public class EnglishNumberRouteTest {
         verify(response).status(200);
     }
 
+    @Test
+    public void shouldHandleLongInput() throws Exception {
+        String digits = "1242523625325";
+        when(request.queryParams("number")).thenReturn(digits);
+
+        Object message = englishNumberRoute.handle(request, response);
+
+        verify400InvalidInput(message);
+    }
+
     private void verify400InvalidInput(Object message) {
         assertThat(message).isEqualTo("Invalid input");
         verify400Status();

@@ -26,15 +26,22 @@ public class EnglishNumberRoute implements Route{
             return400(response);
             return "Invalid input";
         }
-        Integer numberValue = Integer.parseInt(number);
-        if(numberValue > MAX_INPUT) {
+        try {
+            Integer numberValue = Integer.parseInt(number);
+            if (numberValue > MAX_INPUT) {
+                return400(response);
+                return "Invalid input";
+            }
+
+            String message = numberTranslatorService.createTranslator(numberValue).getCapitalizedTranslation();
+            response.status(200);
+            response.type(TEXT_PLAIN);
+            return message;
+        }
+        catch (NumberFormatException e) {
             return400(response);
             return "Invalid input";
         }
-        String message = numberTranslatorService.createTranslator(numberValue).getCapitalizedTranslation();
-        response.status(200);
-        response.type(TEXT_PLAIN);
-        return message;
     }
 
     private void return400(Response response) {
