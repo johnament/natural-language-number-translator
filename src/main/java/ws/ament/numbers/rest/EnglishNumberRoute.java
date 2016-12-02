@@ -23,14 +23,12 @@ public class EnglishNumberRoute implements Route{
             return "No input specified";
         }
         else if(!StringUtils.isNumeric(number)) {
-            return400(response);
-            return "Invalid input";
+            return invalidInput(response);
         }
         try {
             Integer numberValue = Integer.parseInt(number);
             if (numberValue > MAX_INPUT) {
-                return400(response);
-                return "Invalid input";
+                return invalidInput(response);
             }
 
             String message = numberTranslatorService.createTranslator(numberValue).getCapitalizedTranslation();
@@ -39,9 +37,13 @@ public class EnglishNumberRoute implements Route{
             return message;
         }
         catch (NumberFormatException e) {
-            return400(response);
-            return "Invalid input";
+            return invalidInput(response);
         }
+    }
+
+    private Object invalidInput(Response response) {
+        return400(response);
+        return "Invalid input";
     }
 
     private void return400(Response response) {
