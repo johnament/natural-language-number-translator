@@ -12,6 +12,6 @@ After building, there will be a capsule JAR in `target` which you can run using 
 
 ## APIs
 
-You can see an overview of routes at http://localhost:4567/debug/routeoverview/
+You can see an overview of routes at [http://localhost:4567/debug/routeoverview/](http://localhost:4567/debug/routeoverview/)
 
-You can invoke the number translator service at http://localhost:4567/numbers/en passing in a query param `number`
+You can invoke the number translator service at [http://localhost:4567/numbers/en](http://localhost:4567/numbers/en) passing in a query param `number`
